@@ -51,7 +51,7 @@ if pm2 describe $APP_NAME > /dev/null; then
     pm2 restart $APP_NAME
     echo "Application updated and restarted successfully."
 else
-    pm2 start build/index.js --name "$APP_NAME"
+    pm2 start build/index.js --name "$APP_NAME" -- --port 3000
     pm2 save
     echo "Application started for the first time."
 fi
