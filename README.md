@@ -2,12 +2,25 @@
 
 ## Step 1: System Requirements
 
-    - Node.js (v18 or higher)
-    - Git
+### Install node
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+nvm install 24
+node -v # Should print "v24.14.1".
+npm -v # Should print "11.11.0".
+```
+
+### Install GIT
+```bash
+sudo apt-get update
+sudo apt-get install -y git
+```
 
 ## Step 2: Install Global Tools
 ```bash
-npm install -g pnpm pm2
+sudo npm install -g pnpm pm2
 ```
 
 ## Step 3: Clone and Initial Setup
