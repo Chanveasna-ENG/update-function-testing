@@ -1,37 +1,30 @@
 #!/bin/bash
 
-# Configuration
 APP_NAME="update-function-testing"
 BRANCH="main"
 
-echo "--- Starting Process: $(date) ---"
+echo "--- Starting Build & Restart: $(date) ---"
 
-if [ -d .git ]; then
-    echo "Pulling latest code from GitHub..."
-    git pull origin $BRANCH
-else
-    echo "Not a git repository. Skipping pull."
-fi
+# 1. We assume Node has already verified an update exists.
+echo "Hard pulling latest code..."
+git reset --hard origin/$BRANCH
+git pull origin $BRANCH
 
 echo "Installing dependencies..."
 pnpm install
+
+pnpm run db:push
 
 echo "Building application..."
 if pnpm run build; then
     echo "Build successful."
 else
-    echo "Build failed! Check the logs for errors. The app was not restarted."
+    echo "Build failed! Aborting restart."
     exit 1
 fi
 
 echo "Refreshing application process..."
-if pm2 describe $APP_NAME > /dev/null; then
-    pm2 restart $APP_NAME
-    echo "Application updated and restarted successfully."
-else
-    pm2 start build/index.js --name "$APP_NAME" -- --port 3000
-    pm2 save
-    echo "Application started for the first time."
-fi
+pm2 restart $APP_NAME || pm2 start build/index.js --name "$APP_NAME" -- --port 3000
+pm2 save
 
 echo "--- Process Complete ---"
